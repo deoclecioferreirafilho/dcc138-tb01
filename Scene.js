@@ -4,7 +4,7 @@ function Scene(params) {
         toRemove: [],
         ctx: null,
         w: 300,
-        h: 300
+        h: 500
     }
     Object.assign(this, exemplo, params);
 }
@@ -16,8 +16,16 @@ Scene.prototype.adicionar = function (sprite) {
     sprite.Scene = this;
 }
 
-Scene.prototype.limpar = function () {
-    this.ctx.clearRect(0, 0, this.w, this.h);
+Scene.prototype.desenhar = function () {
+    for (var i = 0; i < this.sprites.length; i++)
+    this.sprites[i].desenhar(this.ctx);
+    
+}
+
+Scene.prototype.mover = function (dt) {
+    for (var i = 0; i < this.sprites.length; i++)
+        this.sprites[i].mover(dt);
+
 }
 
 Scene.prototype.comportar = function (dt) {
@@ -28,17 +36,38 @@ Scene.prototype.comportar = function (dt) {
     }
 }
 
-Scene.prototype.mover = function (dt) {
-    for (var i = 0; i < this.sprites.length; i++)
-        this.sprites[i].mover(dt);
+Scene.prototype.limpar = function () {
+    this.ctx.clearRect(0, 0, this.w, this.h);
+}
+
+Scene.prototype.checaColisao = function (dt) {
+    for (var i = 0; i < this.sprites.length; i++) {
+        for (var j = i + 1; j < this.sprites.length; j++) {
+            if (this.sprites[i].colidiuCom(this.sprites[j])) {
+                if (this.sprites[i].props.tipo === "pc" && this.sprites[j].props.tipo === "npc") {
+                    this.toRemove.push(this.sprites[j]);
+                }
+                else
+                    if (this.sprites[i].props.tipo === "npc" && this.sprites[j].props.tipo === "tiro") {
+                        this.toRemove.push(this.sprites[i]);
+                        this.toRemove.push(this.sprites[j]);
+                    }
+            }
+        }
+    }
 
 }
 
-Scene.prototype.desenhar = function () {
-    for (var i = 0; i < this.sprites.length; i++)
-        this.sprites[i].desenhar(this.ctx);
-
+Scene.prototype.removeSprites = function () {
+    for (var i = 0; i < this.toRemove.length; i++) {
+        var idx = this.sprites.indexOf(this.toRemove[i]);
+        if (idx >= 0) {
+            this.sprites.splice(idx, 1);
+        }
+    }
+    this.toRemove = [];
 }
+
 
 Scene.prototype.passo = function (dt) {
     this.limpar();
@@ -48,4 +77,6 @@ Scene.prototype.passo = function (dt) {
     this.checaColisao();
     this.removeSprites();
 }
-
+function newFunction() {
+    return "fillStyle = #dfe";
+}
