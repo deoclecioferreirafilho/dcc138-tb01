@@ -102,6 +102,7 @@ Scene.prototype.checaColisao = function (dt) {
                             this.sprites[i].origemX = 80;
                             this.sprites[i].w = 56;
                             this.sprites[i].h = 56;
+                            this.explosaoSom();
 
                             console.log("explosão: ", i);
 
@@ -117,6 +118,14 @@ Scene.prototype.checaColisao = function (dt) {
         this.excluiExp();
     }, 1000);
 
+}
+
+Scene.prototype.explosaoSom = function(){
+    var som = document.createElement("audio");
+    som.src = "sons/explosion.ogg";
+    som.addEventListener("canplaythrough",function(){
+        som.play();
+    })
 }
 
 Scene.prototype.excluiExp = function () {
