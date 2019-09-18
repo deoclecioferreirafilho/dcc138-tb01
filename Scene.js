@@ -4,57 +4,50 @@ function Scene(params) {
         toRemove: [],
         image: [],
         cargaDeImage: [],
+        mensages:[],
         ctx: null,
         w: 0,
         h: 0,
         cargaImg: 0,
         carregando: 0,
-        estado: this.pausa, //this.carregando,
+        estado: this.carregando,
         inicio: 1,
         pausa: 2,
         fim: 3
+
     }
     Object.assign(this, exemplo, params);
 }
 Scene.prototype = new Scene();
 Scene.prototype.constructor = Scene;
 
-Scene.prototype.estadoDoJogo = function () {
-    switch (this.estado) {
-        case this.carregando:
-            console.log(this.estado + ' Carregando...');
-            break;
-        case this.inicio:
-            console.log(this.estado + ' Iniciar');
-            this.atualizar();
-            break;
-        default:
-            break;
-    }
-}
 
-Scene.prototype.adicionar = function (sprite) {
-    this.sprites.push(sprite);
-    sprite.Scene = this;
-}
- 
-Scene.prototype.adicionarImg = function (image) {
-    this.image.push(image);
-    image.Scene = this;
-}
 
 Scene.prototype.carregaImagem = function () {
+
     this.cargaImg++;
     if (this.cargaImg === this.adicionarImg.length) {
         removeEventListener('load', this.carregaImagem, false);
         this.estado = this.pausa;
-        console.log(this.estado);
     }
+    console.log(this.estado + " pausa");
+}
 
-    var t = 10;
-    this.ctx.fillStyle = "white";
-    this.ctx.fillText('Estado do jogo: ' + this.estado
-        + ' - ' + t, 10, 10);
+Scene.prototype.adicionarMens = function(){
+   this.mensagem.push(mensagem);
+  this.mensagem = this;
+}
+
+
+Scene.prototype.adicionar = function (sprite) {
+    this.sprites.push(sprite);
+    sprite.Scene = this;
+
+}
+
+Scene.prototype.adicionarImg = function (image) {
+    this.image.push(image);
+    image.Scene = this;
 }
 
 
@@ -64,8 +57,20 @@ Scene.prototype.desenhar = function () {
 }
 
 Scene.prototype.atualizar = function () {
-
-
+    if (mensages.length !==0) 
+    for (var i = 0; i < mensages.length; i++) {
+        var mensagens = mensages[i];
+        if(mensagens.visible){
+            this.ctx.font = mensagens.font;
+            this.ctx.fillStyle = mensagens.color;
+            this.ctx.texBaseline = mensagens.baseline;
+            mensagens.x = (this.w - ctx.measureText(mensagens.text).width)/2;
+            this.ctx.fillText(mensagens.text, mensagens.x, mensagens.y);
+            
+            console.log(mensagens.text);
+        }
+    }
+   
 }
 
 Scene.prototype.mover = function (dt) {
@@ -104,9 +109,6 @@ Scene.prototype.checaColisao = function (dt) {
                             this.sprites[i].h = 56;
                             this.explosaoSom();
 
-                            console.log("explosão: ", i);
-
-
                         }
                         this.toRemove.push(this.sprites[j]);
                     }
@@ -120,22 +122,36 @@ Scene.prototype.checaColisao = function (dt) {
 
 }
 
-Scene.prototype.explosaoSom = function(){
+Scene.prototype.explosaoSom = function () {
     var som = document.createElement("audio");
     som.src = "sons/explosion.ogg";
-    som.addEventListener("canplaythrough",function(){
+    som.addEventListener("canplaythrough", function () {
         som.play();
     })
 }
 
 Scene.prototype.excluiExp = function () {
     for (var i = 0; i < this.sprites.length; i++) {
-        if (this.sprites[i].props.tipo === "expc"){  
-               this.toRemove.push(this.sprites[i]);
+        if (this.sprites[i].props.tipo === "expc") {
+            this.toRemove.push(this.sprites[i]);
         }
     }
 
 }
+
+/*
+Scene.prototype.mensagem = function (y, text, color) {
+    this.x = 0;
+    this.y = y;
+    this.text = text;
+    this.visible = true;
+    this.font = "30px Verdana bold";
+    this.color = color;
+    this.baseline = "top";
+}
+*/
+
+
 
 
 
@@ -149,16 +165,32 @@ Scene.prototype.removeSprites = function () {
     this.toRemove = [];
 }
 
+Scene.prototype.prePasso = function (dt) {
+    this.limpar();
+    this.desenhar();
+    this.atualizar();
+  
 
+    switch (this.estado) {
+        case this.carregando:
+            console.log(this.estado + ' Carregando...');
+            break;
+        case this.inicio:
+
+            this.passo(dt);
+            break;
+        default:
+            break;
+    }
+}
 
 Scene.prototype.passo = function (dt) {
-    this.limpar();
-    this.estadoDoJogo();
+
     this.comportar();
     this.mover(dt);
-    this.desenhar();
     this.checaColisao(dt);
     this.removeSprites();
+    
 }
 
 

@@ -23,10 +23,12 @@ function Sprite(params = {}) {
         origemX: 0,
         origemY: 0,
         normal: 1,
+        contaVida: 0,
         explosao: 2,
         zigzag: 3,
         estado: this.normal,
-        mvestado: this.normal
+        mvestado: this.normal,
+        imune:0
 
     }
     Object.assign(this, exemplo, params);
@@ -36,17 +38,12 @@ Sprite.prototype = new Sprite({});
 Sprite.prototype.constructor = Sprite;
 
 var img = new Image();
-//img.addEventListener('load')
 img.src = "imagens/img.png";
 
 Sprite.prototype.desenhar = function (ctx) {
 
-    //  ctx.drawImage(img,this.origemX, this.origemY);
-
-
     ctx.drawImage(img, this.origemX, this.origemY, this.w, this.h,
         Math.floor(this.x), Math.floor(this.y), this.w, this.h)
-
 };
 
 Sprite.prototype.explodir = function () {
