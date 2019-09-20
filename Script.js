@@ -28,10 +28,6 @@ var mensages = [];
 
 
 
-//var img = new Image({ src: "imagens/img.png" }); 
-// addEventListener('load', this.carregaImagem, false);
-
-
 var cena1 = new Scene({ ctx: ctx, w: canvas.width, h: canvas.height });
 var pc = new Sprite({ x: canvas.width / 2 - 15, y: canvas.height - 55, comportar: porTeclasDirecionais(teclas), props: { tipo: "pc" } }); //
 var fundo = new Sprite({ origemX: 0, origemY: 56, w: canvas.width, h: canvas.height, x: 0, y: 0 })
@@ -44,30 +40,19 @@ var mensagePausa = new mensagem(cena1.h / 2, "PAUSA", "red");
 mensagePausa.visible = false;
 mensages.push(mensageInicio);
 mensages.push(mensagePausa);
+var mensagePlacar = new mensagem(14, "", "white");
+mensagePlacar.font = "bold 15px arial";
+mensages.push(mensagePlacar);
+
+
+cena1.adicionar(new Sprite({
+    origemX: 31, origemY: 0, x: 150, y: -50, w: 50, h: 50, va: 30, vm: 100,
+    comportar: persegue2(pc), props: { tipo: "npc", Spawn: 10 }
+}));
 
 
 
 
-
-
-/*
-    cena1.adicionar(new Sprite({
-        origemX: 31, origemY: 0, x: 150, y: 50, w: 50, h: 50, va: 30, vm: 100, 
-        comportar: persegue2(pc), props: { tipo: "npc", Spawn: 10 }
-    }));
-    
-        cena1.adicionar(new Sprite({
-            origemX: 31, origemY: 0, x: 300, y: 50, w: 50, h: 50, va: 30, vm: 100, 
-            comportar: persegue2(pc), props: { tipo: "npc" }
-        }));
-        /*
-        cena1.adicionar(new Sprite({
-            x: canvas.width / 3-25, y: 20, h: 10, w: 50, vm: 80, color: "blue",
-            comportar: persegue(pc), props: { tipo: "npc" }
-        }));
-    
-        //Funções
-    */
 var navFreq = 100;
 var navTime = 0;
 var navVida = 50;
@@ -76,6 +61,7 @@ var contaAcertos = 0;
 var percentAcertos = 0;
 var objetivo = 70;
 
+//Funções
 
 function validaNav() {
     navTime++;
@@ -88,8 +74,6 @@ function validaNav() {
 
         }
     }
-    // console.log(navTime, " == ", navFreq)
-    //console.log( " Nave: ", navVida)
 }
 
 function criaNav() {
@@ -99,23 +83,32 @@ function criaNav() {
         y: -60,
         w: 50,
         h: 50,
-        // va: 4 * Math.random(),
-        //  vm: 200 * Math.random(),
-        vy: 300,
+        
+        va: 4 * Math.random(),
+        vm: 200 * Math.random(),
+        vy: 500,
         comportar: persegue2(pc),
         props: { tipo: "npc" }
     }));
 
+        var tiroInimigo = new Sprite({
+            origemX: 136, origemY: 12, x: this.x+ 25, y:  100, a: this.a - 0.1 + 0 * Math.random(),
+            w: 8, h: 13, comportar: vtiro(), props: { tipo: "npc" }, vy: +100, vx: 0
+        });
+        cena1.adicionar(tiroInimigo);
+        this.cooldown = 0.8;
+    
 }
 
-/*
-    function persegue(alvo) {
-        return function () {
-            //  this.vx = 50 * Math.sign(alvo.x - this.x);
-            this.vy = 50 * Math.sign(alvo.y - this.y);
-        }
+
+
+function persegue(alvo) {
+    return function () {
+        this.vx = 50 * Math.sign(alvo.x - this.x);
+        this.vy = 50 * Math.sign(alvo.y - this.y);
     }
-*/
+}
+
 function persegue2(alvo) {
     return function () {
         var dx = alvo.x - this.x;
@@ -171,11 +164,13 @@ function porTeclasDirecionais(teclas) {
 
         if (teclas.espaco && this.cooldown <= 0) {
             var tiro = new Sprite({
-                origemX: 136, origemY: 12, x: this.x + 11, y: this.y - 12, a: this.a - 0.1 + 0 * Math.random(),
+                origemX: 136, origemY: 12, x: this.x + 11, y: this.y, a: this.a - 0.1 + 0 * Math.random(),
                 w: 8, h: 13, comportar: vtiro(), props: { tipo: "tiro" }, vy: -1000, vx: 0
             });
             this.Scene.adicionar(tiro);
             this.cooldown = 0.3;
+
+            contaTiros++;
         }
     }
 }
@@ -184,6 +179,7 @@ function vtiro() {
 
     this.y = this.y + this.vy * dt;
 }
+
 
 
 

@@ -17,6 +17,7 @@ function Sprite(params = {}) {
         imune: 0,
         atirando: 0,
         image: "",
+        imge: "imagens/img.png",
         scene: undefined,
         comportar: undefined,
         limite: undefined,
@@ -39,11 +40,14 @@ Sprite.prototype.constructor = Sprite;
 
 var img = new Image();
 img.src = "imagens/img.png";
+var tiroI = new Image();
+tiroI.src = "imagens/tiroi.png";
 
 Sprite.prototype.desenhar = function (ctx) {
 
     ctx.drawImage(img, this.origemX, this.origemY, this.w, this.h,
         Math.floor(this.x), Math.floor(this.y), this.w, this.h)
+
 };
 
 Sprite.prototype.explodir = function () {
@@ -54,9 +58,9 @@ Sprite.prototype.explodir = function () {
 Sprite.prototype.mover = function (dt) {
     this.a = this.a + this.va * dt;
     /*
-        this.vx = this.vm * Math.cos(this.a);
-        this.vy = this.vm * Math.sin(this.a);
-        */
+    this.vx = this.vm * Math.cos(this.a);
+    this.vy = this.vm * Math.sin(this.a);
+    */
     this.x = this.x + this.vx * dt;
     this.y = this.y + this.vy * dt;
 

@@ -66,11 +66,14 @@ Scene.prototype.atualizar = function () {
             this.ctx.texBaseline = mensagens.baseline;
             mensagens.x = (this.w - ctx.measureText(mensagens.text).width)/2;
             this.ctx.fillText(mensagens.text, mensagens.x, mensagens.y);
-            
-            console.log(mensagens.text);
+
         }
     }
    
+}
+
+Scene.prototype.atualizaPlacar = function(){
+    mensagePlacar.text = "PONTOS: " + contaAcertos + "   -   PERC DE TIROS: " + percentAcertos + " %"
 }
 
 Scene.prototype.mover = function (dt) {
@@ -108,6 +111,7 @@ Scene.prototype.checaColisao = function (dt) {
                             this.sprites[i].w = 56;
                             this.sprites[i].h = 56;
                             this.explosaoSom();
+                            contaAcertos++;
 
                         }
                         this.toRemove.push(this.sprites[j]);
@@ -169,6 +173,7 @@ Scene.prototype.prePasso = function (dt) {
     this.limpar();
     this.desenhar();
     this.atualizar();
+    this.atualizaPlacar();
   
 
     switch (this.estado) {
